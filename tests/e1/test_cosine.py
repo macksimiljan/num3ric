@@ -30,12 +30,30 @@ class BasicTestSuite(unittest.TestCase):
     def test_third_member_cosine_series(self):
         self.assertEqual(3.375, cosine.get_member_cosine_series(2, 3))
 
+    def test_fourth_member_cosine_series(self):
+        self.assertEqual(-64.8, cosine.get_member_cosine_series(3, 6))
+
+    def test_first_member_cosine_series_by_factorization(self):
+        self.assertEqual(1, cosine.get_member_cosine_series_by_factorization(0, 0))
+        self.assertEqual(1, cosine.get_member_cosine_series_by_factorization(0, 42))
+
+    def test_second_member_cosine_series_by_factorization(self):
+        self.assertEqual(0, cosine.get_member_cosine_series_by_factorization(1, 0))
+        self.assertEqual(-8, cosine.get_member_cosine_series_by_factorization(1, 4))
+        self.assertEqual(-3.125, cosine.get_member_cosine_series_by_factorization(1, 2.5))
+
+    def test_third_member_cosine_series_by_factorization(self):
+        self.assertEqual(3.375, cosine.get_member_cosine_series_by_factorization(2, 3))
+
+    def test_fourth_member_cosine_series_by_factorization(self):
+        self.assertEqual(-64.8, cosine.get_member_cosine_series_by_factorization(3, 6))
+
     def test_cosine_as_series(self):
         self.assertEqual(1, cosine.cosine_as_series(0))
-        self.assertAlmostEqual(0, cosine.cosine_as_series(pi/2), 14)
-        self.assertAlmostEqual(-1, cosine.cosine_as_series(pi),14)
-        self.assertAlmostEqual(0, cosine.cosine_as_series(3 * pi / 2), 14)
-        self.assertAlmostEqual(1, cosine.cosine_as_series(2 * pi), 13)
+        self.assertAlmostEqual(0, cosine.cosine_as_series(pi/2), 12)
+        self.assertAlmostEqual(-1, cosine.cosine_as_series(pi),12)
+        self.assertAlmostEqual(0, cosine.cosine_as_series(3 * pi / 2), 12)
+        self.assertAlmostEqual(1, cosine.cosine_as_series(2 * pi), 12)
 
 
 if __name__ == '__main__':
