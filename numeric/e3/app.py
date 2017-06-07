@@ -1,33 +1,23 @@
-import matplotlib.pyplot as pyplot
-from numpy import arange, sqrt
-
-from numeric.e3.polynom_interpolation import PolynomInterpolation
+from numeric.e3.horner import *
 
 
-def target_function(x):
-    return sqrt(2*x)
+coefficients_test = [n for n in range(6, 0, -1)]
+horner_test = Horner(coefficients_test)
+for k in range(10):
+    print(horner_test.calculate_horner_schema(2, k))
+    print(horner_test.taylor_series_to_string(2, k))
+    print('for k = {:d}: P({}) = {}'.format(k, 2, horner_test.calculate_value_by_taylor(2, 2, k)))
+    print()
 
-def g(x):
-    return -15 * (2*x)**(-3.5)
+coefficients_p = [1 for n in range(41)]
+coefficients_q = [n + 1 for n in range(31)]
 
-#stuetzstellen = [(1, 30), (2, 27), (3, 25), (4, 24), (5, 21)]
-stuetzstellen = [(0.5, 1), (2, 2), (4.5, 3), (8, 4)]
-interpolation = PolynomInterpolation(stuetzstellen)
-print(interpolation.polynom_newton(3))
-print(interpolation.formula_newton)
+x = 0.2
 
-pyplot.figure()
-x_axis = arange(0.5, 8, 0.01)
-y_axis = [interpolation.polynom_newton(x) for x in x_axis]
-pyplot.plot(x_axis, y_axis, 'b')
-for stuetzstelle in stuetzstellen:
-    pyplot.plot(stuetzstelle[0], stuetzstelle[1], 'r*')
-pyplot.plot(x_axis, target_function(x_axis), 'r--')
-pyplot.show()
-
-pyplot.figure()
-x_axis = arange(0.5, 8, 0.01)
-y_axis = [g(x) for x in x_axis]
-pyplot.plot(x_axis, y_axis)
-pyplot.show()
-
+horner_p = Horner(coefficients_p)
+horner_q = Horner(coefficients_q)
+print(horner_p.taylor_coefficients(x, len(coefficients_p)))
+for k in [10, 20, 30]:
+    print('for P(x) with k = {:d}:'.format(k))
+    print('\t P({}) = {}'.format(x, horner_p.calculate_value_by_taylor(x, x, k)))
+    print()
