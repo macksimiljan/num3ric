@@ -1,4 +1,4 @@
-from numpy import full, nan as NaN
+from numpy import full, nan as NaN, uint64
 from re import sub as regexp_replace
 
 
@@ -7,6 +7,7 @@ class Horner(object):
     def __init__(self, polynominal_coefficients):
         self.__polynominal_coefficients = polynominal_coefficients
         self.__number_coefficients = len(polynominal_coefficients)
+        self.complete_horner_schema = True
         self.matrix = full([0, 0], NaN)
 
     def calculate_value_by_taylor(self, x, evaluation_point, maximum_order):
@@ -36,7 +37,8 @@ class Horner(object):
             coefficients.append(coefficient)
         return coefficients
 
-    def calculate_horner_schema(self, evaluation_point, maximum_order):
+    def calculate_horner_schema(self, evaluation_point, maximum_order, complete=True):
+        self.complete_horner_schema = complete
         maximum_order = self.__maximum_order_to_validate_order(maximum_order)
         self.__initialize_matrix(maximum_order)
         self.__initialize_first_row(maximum_order)
@@ -68,7 +70,10 @@ class Horner(object):
     def __fill_matrix(self, x):
         for current_col in range(1, self.matrix.shape[1]):
             for current_row in range(1, self.__col_length(current_col)):
-                self.__determine_cell(x, current_row, current_col)
+                if self.complete_horner_schema:
+                    self.__determine_cell(x, current_row, current_col)
+                elif current_row < 4:
+                    self.__determine_cell(x, current_row, current_col)
 
     def __col_length(self, current_col):
         maximum_length = self.matrix.shape[0]
