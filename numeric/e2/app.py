@@ -5,27 +5,34 @@ from numeric.e2.rotation import Rotation
 
 print('Fixed-Point Iteration\n------------------')
 
-values1, no_iterations1, convergent1 = fix_iter(phi1, 0.0, 1e-12, 100)
-values2, no_iterations2, convergent2 = fix_iter(phi2, 0.5, 1e-12, 100)
-values3, no_iterations3, convergent3 = fix_iter(phi2, 1.0, 1e-12, 100)
-
+# fix_iter returns the values at each iteration step, number of iterations, and flag of convergence
+values1, no_iterations1, is_convergent1 = fix_iter(phi1, 0.0, 1e-12, 100)
+values2, no_iterations2, is_convergent2 = fix_iter(phi2, 0.5, 1e-12, 100)
+values3, no_iterations3, is_convergent3 = fix_iter(phi3, 1.0, 1e-12, 100)
 
 print('{:17}\t{:17}\t{:17}\t{:17}'.format('iteration', 'phi_1', 'phi_2', 'phi_3'))
 for i in range(0, 101):
     if i < 6:
+        # print the first values
         v1 = values1[i] if i < len(values1) else values1[-1]
         v2 = values2[i] if i < len(values2) else values2[-1]
         v3 = values3[i] if i < len(values3) else values3[-1]
         print('{:^10}\t{:17.14f}\t{:17.14f}\t{:17.14f}'.format(i, v1, v2, v3))
     elif i == 6:
+        # print some dots
         print('{:^10}\t{:^17}\t{:^17}\t{:^17}'.format('...', '...', '...', '...'))
-    if i == len(values1) - 1 and convergent1:
+    if i == len(values1) - 1 and is_convergent1:
+        # if phi_1 is convergent, print its last value
         print('{:^10}\t{:^17.14}\t{:^17}\t{:^17}'.format(i, values1[-1], '...', '...'))
-    if i == len(values2) - 1 and convergent2:
+    if i == len(values2) - 1 and is_convergent2:
+        # if phi_2 is convergent, print its last value
         print('{:^10}\t{:^17}\t{:^17.14}\t{:^17}'.format(i, '...', values2[-1], '...'))
-    if i == len(values3) - 1 and convergent3:
+    if i == len(values3) - 1 and is_convergent3:
+        # if phi_3 is convergent, print its last value
         print('{:^10}\t{:^17}\t{:^17}\t{:^17.14}'.format(i, '...', '...', values3[-1]))
 
+
+# calculate the order of convergence for each fixed point iteration
 order1 = calculate_order_of_convergence(values1[2], values1[3], values1[4], values1[-1])
 order2 = calculate_order_of_convergence(values2[2], values2[3], values2[4], values2[-1])
 order3 = calculate_order_of_convergence(values3[2], values3[3], values3[4], values3[-1])
@@ -34,7 +41,9 @@ print()
 print('order of convergence for ... \n'
       '\t... phi_1:\t', round(order1, 2), '\n\t... phi_2:\t', round(order2, 2), '\n\t... phi_3:\t', round(order3, 2))
 
+# evaluate the calculated fixed points by checking the graphs
 print_functions((-1, 2))
+
 
 print()
 input('Press enter ... ')
@@ -61,7 +70,6 @@ print('alpha =', round(alpha, 4))
 print('interval [a, b] = [', round(interval[0], 4), ',', round(interval[1], 4), ']')
 print('interval [c, d] = [', round(rotated_interval[0], 4), ',', round(rotated_interval[1], 4), ']')
 print()
-
 print('x  = {:6.4} \t f(x)  = {:6.4}'.format(point_before_rotation[0], point_before_rotation[1]))
 print('x\' = {:6.4} \t g(x\') = {:6.4}'.format(point_after_rotation[0], point_after_rotation[1]))
 
