@@ -14,14 +14,14 @@ class Horner(object):
         taylor_coefficients = self.taylor_coefficients(evaluation_point, maximum_order)
         value = 0
         for n in range(len(taylor_coefficients)):
-            value += taylor_coefficients[n] * (x - evaluation_point) ** (self.__number_coefficients - n - 1)
+            value += taylor_coefficients[n] * (x - evaluation_point) ** n
         return value
 
     def taylor_series_to_string(self, evaluation_point, maximum_order):
         taylor_coefficients = self.taylor_coefficients(evaluation_point, maximum_order)
         string = ''
         for n in range(len(taylor_coefficients)):
-            string += ' + {:.2f}*(x-{:.2f})^{:.2f}'.format(taylor_coefficients[n], evaluation_point, self.__number_coefficients - n - 1)
+            string += ' + {:.2f}*(x-{:.2f})^{:.2f}'.format(taylor_coefficients[n], evaluation_point, n)
         string = string[2 : ]
         string = regexp_replace(r'\*\(x-\d+\.\d*\)\^0\.00', '', string)
         string = regexp_replace(r' 1\.00\*', ' ', string)
@@ -32,8 +32,9 @@ class Horner(object):
     def taylor_coefficients(self, evaluation_point, maximum_order):
         self.calculate_horner_schema(evaluation_point, maximum_order)
         coefficients = []
-        for col in range(self.matrix.shape[1]):
-            coefficient = self.matrix[self.__col_length(col) - 1, col]
+        for row in range(2, self.matrix.shape[0], 2):
+            col = int(self.matrix.shape[1] - row / 2)
+            coefficient = self.matrix[row, col]
             coefficients.append(coefficient)
         return coefficients
 
@@ -41,7 +42,7 @@ class Horner(object):
         self.complete_horner_schema = complete
         maximum_order = self.__maximum_order_to_validate_order(maximum_order)
         self.__initialize_matrix(maximum_order)
-        self.__initialize_first_row(maximum_order)
+        self.__initialize_first_row()
         self.__initialize_first_column()
         self.__fill_matrix(evaluation_point)
         return self.matrix
@@ -54,25 +55,24 @@ class Horner(object):
         return maximum_order
 
     def __initialize_matrix(self, maximum_order):
-        number_rows = 2 * self.__number_coefficients + 1
-        number_cols = maximum_order + 1
+        number_rows = 1 + 2 * (maximum_order + 1)
+        number_cols = self.__number_coefficients
         self.matrix = full([number_rows, number_cols], NaN)
 
-    def __initialize_first_row(self, maximum_order):
+    def __initialize_first_row(self):
         reversed_coefficients = self.__polynominal_coefficients[: : -1]
-        self.matrix[0, :] = reversed_coefficients[0 : maximum_order+1]
+        self.matrix[0, :] = reversed_coefficients
 
     def __initialize_first_column(self):
-        row_indices = [2 * i for i in range(self.__number_coefficients + 1)]
-        for index in row_indices:
-            self.matrix[index, 0] = self.matrix[0, 0]
+        row = 2
+        while row < self.matrix.shape[0]:
+            self.matrix[row, 0] = self.matrix[0, 0]
+            row += 2
 
     def __fill_matrix(self, x):
         for current_col in range(1, self.matrix.shape[1]):
-            for current_row in range(1, self.__col_length(current_col)):
-                if self.complete_horner_schema:
-                    self.__determine_cell(x, current_row, current_col)
-                elif current_row < 4:
+            for current_row in range(1, self.matrix.shape[0]):
+                if current_col <= self.matrix.shape[1] - abs(current_row / 2):
                     self.__determine_cell(x, current_row, current_col)
 
     def __col_length(self, current_col):
