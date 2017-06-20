@@ -16,7 +16,7 @@ def Q(x):
     return sum
 
 evaluation_point = 0.2
-x_values = arange(-5, 5, 0.1)
+x_values = arange(-0.2, 0.6, 0.01)
 
 
 def show_p():
